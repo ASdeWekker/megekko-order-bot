@@ -6,7 +6,8 @@
 	"author": "Alex de Wekker",
 	"license": "MIT",
 	"scripts": {
-		"tsc": "tsc"
+		"tsc": "tsc",
+		"bot": "node build/megekko-3080-bot.js"
 	},
 	"dependencies": {
 		"@types/dotenv": "^8.2.0",
