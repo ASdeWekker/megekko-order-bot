@@ -42,8 +42,10 @@ const getPosition: any = async () => {
 		await driver.get(url)
 		await driver.wait(until.titleIs(title), 3000)
 		await driver.findElement(By.id(orderidElem)).sendKeys(orderid)
+		// Fill in the postal code and tab to the submit button.
 		await driver.findElement(By.id(postcodeElem)).sendKeys(postcode, Key.TAB, Key.RETURN)
 		await driver.wait(until.elementTextIs(driver.findElement(By.id(resultElem)), resultText), 5000)
+		// Get the array of divs and return the seventh, which contains my place in line.
 		let elems: any[] = await (await driver.findElement(By.id(resultElem))).findElements(By.css("div"))
 		return await elems[7].getText()
 	} catch (e) {
@@ -53,6 +55,7 @@ const getPosition: any = async () => {
 	}
 }
 
+// Get the position and send a message.
 const msgPosition: any = async () => {
 	let position: any = await getPosition()
 	bot.telegram.sendMessage(chatID, `Je staat op plek ${position}`, { parse_mode: parse })
@@ -61,7 +64,7 @@ const msgPosition: any = async () => {
 bot.on("text", (ctx: any) => {
 	let msg: string = ctx.message.text.toLowerCase()
 	if (msg === "check") {
-		msgInterval = setInterval(msgPosition, 3600000)
+		msgInterval = setInterval(msgPosition, 3600000) // An hour.
 		return ctx.reply("Even kijken of je al wat bent opgeschoten.")
 	} else if (msg === "plek") {
 		msgPosition()
@@ -70,10 +73,11 @@ bot.on("text", (ctx: any) => {
 		clearInterval(msgInterval)
 		return ctx.reply("De updates zullen stoppen.")
 	} else {
-		return ctx.replyWithHTML("Stuur <b><i>plek</i></b> om te kijken op welke plek je nu staat.  Stuur <b><i>check</i></b> om elk uur te kijken op welke plek je staat of hoe lang de rij is.  Stuur <b><i>stop</i></b> om deze check uit te zetten.")
+		return ctx.replyWithHTML("Stuur <b><i>plek</i></b> om te kijken op welke plek je nu staat. Stuur <b><i>check</i></b> om elk uur te kijken op welke plek je staat of hoe lang de rij is.  Stuur <b><i>stop</i></b> om deze check uit te zetten.")
 	}
 })
 
+// Stickertje 👍.
 bot.on("sticker", Telegraf.reply("👍"))
 
 // Launch the bot.
